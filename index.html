@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Jogo</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #ffe6f2;
+            animation: fadeIn 1.5s;
+        }
+        #game-container, #start-screen { 
+            max-width: 600px; 
+            margin: auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: popIn 1s;
+        }
+        .hidden { display: none; }
+        button { 
+            background-color: #ff4d79; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            background-color: #e6004c;
+            transform: scale(1.1);
+        }
+        img { 
+            max-width: 100px; 
+            margin-top: 10px;
+            animation: bounce 1s infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Nosso Jogo 💖</h1>
+    
+    <div id="start-screen">
+        <h2>Oi, minha bzinha! 💕</h2>
+        <p>Preparei algo especial para você! Mas antes de iniciarmos, queria te lembrar do quão importante você é pra mim. Desde que entrou na minha vida, você tem sido a luz nos meus dias escuros, o calor nos dias frios e a minha alegria nos dias tristes</p>
+        <p>Eu te amo muito e se me der a chance, eu quero poder me apaixonar por você dia após dia e quero fazer você se apaixonar por mim, dia após dia também.</p>
+        <p>Obrigado por ser essa mulher incrível que Deus me mandou 🙏</p>
+        <p>Thibete do Agreste</p><br>
+        <p>Se você chegar no final, vou te falar uma das coisas que vai acontecer no pedido de namoro, ou então aonde vai ser. Aí você escolhe qual das duas quer saber
+        <p>Tá pronta pra jogar, nénem? Kkkkkkkkkkk</p>
+        <button onclick="startGame()">Sim, b 🥰</button>
+    </div>
+    
+    <div id="game-container" class="hidden">
+        <audio id="correct-sound" src="https://www.myinstants.com/media/sounds/correct.mp3"></audio>
+        <audio id="wrong-sound" src="https://www.myinstants.com/media/sounds/wrong.mp3"></audio>
+        <audio id="win-sound" src="https://www.myinstants.com/media/sounds/applause.mp3"></audio>
+        <p><img src="https://cdn.anamelim.com.br/wp-content/uploads/2024/04/stitch-coracao-jpg.png" alt=""></p>
+        <p id="lives">Vidas: ❤️❤️❤️</p>
+        <p id="question"></p>
+        <input type="text" id="answer" placeholder="Digite sua resposta">
+        <button onclick="checkAnswer()">Responder</button>
+        <p id="feedback"></p>
+    </div>
+    
+    <script>
+        let lives = 3;
+        let lockoutTime = 180000; // 10 minutos em milissegundos
+        let lockoutKey = "game_lockout";
+
+        function checkLogin() {
+            let username = "b";
+            let password = "Xg7!pLz@w9#Kd2Vm";
+            
+            let userInput = prompt("Digite o login:");
+            let passInput = prompt("Digite a senha:");
+            
+            if (userInput !== username || passInput !== password) {
+                alert("Login ou senha incorretos! Você não pode acessar o jogo.");
+                document.body.innerHTML = "";
+            } else {
+                document.getElementById("start-screen").classList.remove("hidden");
+            }
+        }
+        
+        window.onload = checkLogin;
+
+        function startGame() {
+            let lockout = localStorage.getItem(lockoutKey);
+            if (lockout && new Date().getTime() < parseInt(lockout)) {
+                alert("Você perdeu todas as vidas! Aguarde os 3 minutos.");
+                return;
+            }
+            lives = 3;
+            updateLives();
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("game-container").classList.remove("hidden");
+            loadQuestion();
+        }
+        
+        const questions = [
+            { question: "Onde nos conhecemos?", answers: ["Prédio", "no prédio", "predio", "No predio"] },
+            { question: "Quando começamos a nos falar?", answers: ["07/01/2025", "07 de janeiro de 2025", "07/01", "07 de janeiro"] },
+            { question: "Data do nosso primeiro encontro?", answers: ["19/01/2025", "19 de janeiro de 2025", "19/01", "19 de janeiro"] },
+            { question: "Lembra aonde?", answers: ["Quinkas", "no Quinkas", "quinkas", "no quinkas", "Quinkas bar"] },
+            { question: "Quando foi nosso primeiro beijo?", answers: ["28/01/2025", "28 de janeiro de 2025", "28/01", "28 de janeiro"] },
+            { question: "Lembra aonde?", answers: ["No carro", "carro", "Carro", "Dentro do carro", "dentro do carro"] },
+            { question: "De quem você estava falando quando eu decidi que era você a pessoa que eu queria passar o resto da minha vida?", answers: ["Minha família", "família", "Família", "Da minha família", "familia", "minha familia", "da minha familia"] },
+            { question: "O que brilhava quando você falava deles?", answers: ["Olhos", "meus olhos", "Os olhos", "os olhos"] },
+            { question: "Quando fomos pra praia?", answers: ["08/02/2025", "08 de fevereiro de 2025", "08/02", "08 de fevereiro"] },
+            { question: "Onde a gente foi quando eu te dei o primeiro buquê?", answers: ["Pizzaria", "na pizzaria", "No rodízio de pizza", "no rodizio de pizza"] }
+        ];
+        let currentQuestion = 0;
+        
+        function loadQuestion() {
+            document.getElementById("question").textContent = questions[currentQuestion].question;
+            document.getElementById("answer").value = "";
+            document.getElementById("feedback").textContent = "";
+        }
+        
+        function checkAnswer() {
+            let answer = document.getElementById("answer").value.toLowerCase();
+            let correctAnswers = questions[currentQuestion].answers.map(ans => ans.toLowerCase());
+
+            if (correctAnswers.includes(answer)) {
+                document.getElementById("correct-sound").play();
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    loadQuestion();
+                } else {
+                    document.getElementById("win-sound").play();
+                    document.getElementById("game-container").innerHTML = `
+                        <h2>Parabéns, amor! ❤️ Você venceu!</h2>
+                        <p>Você pode escolher uma das duas opções abaixo:</p>
+                        <button onclick="chooseReward('A')">Uma das várias coisas que você vai ganhar 🎁</button>
+                        <button onclick="chooseReward('B')">Uma das várias coisas que vai acontecer no dia 🎁</button>
+                        <p></p><br>
+                        <video width="350" height="500" controls autoplay muted>
+                            <source src="euela.mp4" type="video/mp4">
+                            Seu navegador não suporta vídeos.
+                        </video>
+                    `;
+                }
+            } else {
+                document.getElementById("wrong-sound").play();
+                lives--;
+                updateLives();
+                
+                if (lives === 0) {
+                    alert("Você perdeu todas as vidas! Espere 3 minutos para tentar novamente.");
+                    localStorage.setItem(lockoutKey, new Date().getTime() + lockoutTime);
+                    location.reload();
+                } else {
+                    document.getElementById("feedback").textContent = "Tente novamente, bzinha! 😘";
+                }
+            }
+        }
+
+        function chooseReward(option) {
+            let message = option === 'A' ? "Luminária de Rosa" : "Jantar romântico";
+            
+            document.getElementById("game-container").innerHTML = `
+                <h2>Você escolheu a Opção ${option}</h2>
+                <p>${message}</p><br>
+                <img src="recompensa_${option}.jpg" alt="Recompensa ${option}">
+            `;
+        }
+        
+        function updateLives() {
+            let hearts = "❤️".repeat(lives) + "💔".repeat(3 - lives);
+            document.getElementById("lives").textContent = "Vidas: " + hearts;
+        }
+    </script>
+
+    <img src="euela.jpg" alt="">
+</body>
+</html>
